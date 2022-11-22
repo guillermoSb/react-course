@@ -1,27 +1,51 @@
+import { useDispatch } from 'react-redux'
 import {Link as RouterLink} from 'react-router-dom'
 import { Google } from '@mui/icons-material'
 import { Button, Grid, Link, TextField, Typography } from '@mui/material'
-import React from 'react'
 import { AuthLayout } from '../layout/AuthLayout'
+import { useForm } from '../../hooks'
+import { checkingAuthentication, startGoogleSignIn } from '../../store/auth/thunks'
+
 
 export const LoginPage = () => {
+	const dispatch = useDispatch();
+	
+
+	
+	
+	const { email, password, onInputChange } = useForm({
+		email: 'gullermo@test.com',
+		password: '1234'
+	})
+
+	const onSubmit = (event) => {
+		event.preventDefault()
+		dispatch(checkingAuthentication(email, password))
+
+	}
+
+	const onGoogleSignIn = () => {
+		console.log('On google sign in');
+		dispatch(startGoogleSignIn())
+	}
+	
 	return (
 		<AuthLayout title='Login'>
-				<form >
+				<form onSubmit={onSubmit}>
 					<Grid container>
 						<Grid item xs={12} sx={{mt: 2}}>
-							<TextField label="Correo" type={"email"} placeholder="correo@test.com" fullWidth></TextField>
+							<TextField name='email' onChange={onInputChange} value={email} label="Correo" type={"email"} placeholder="correo@test.com" fullWidth></TextField>
 						</Grid>
 						<Grid item xs={12} sx={{mt: 2}}>
-							<TextField label="Contraseña" type={"password"} placeholder="Contraseña" fullWidth></TextField>
+							<TextField name='password' onChange={onInputChange} value={password} label="Contraseña" type={"password"} placeholder="Contraseña" fullWidth></TextField>
 						</Grid>
 					</Grid>
 					<Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
 						<Grid item flex={1}>
-							<Button variant='contained' fullWidth>Login</Button>
+							<Button variant='contained' type="submit" fullWidth>Login</Button>
 						</Grid>
 						<Grid item >
-							<Button variant='contained'>
+							<Button variant='contained' onClick={onGoogleSignIn}>
 								<Google/>
 							</Button>
 						</Grid>
